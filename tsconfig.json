@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2016", // Specifies ECMAScript target version.
+    "module": "commonjs", // Use CommonJS modules (Node.js standard).
+    "outDir": "./dist", // Output directory for compiled files.
+    "rootDir": "./src", // Root directory of source files.
+    "esModuleInterop": true, // Enables compatibility with CommonJS modules.
+    "forceConsistentCasingInFileNames": true, // Enforces consistent file name casing.
+    "noImplicitAny": true, // Ensures all variables are typed.
+    "skipLibCheck": true, // Skips type checking for declaration files.
+    "strict": true, // Enables all strict type-checking options.
+    "resolveJsonModule": true, // Allows importing JSON files as modules.
+    "moduleDetection": "force", // Ensures module boundaries are respected.
+    "strictNullChecks": true, // Prevents null/undefined assignment without explicit checks.
+    "strictPropertyInitialization": true // Ensures properties are initialized properly.
+  },
+  "include": ["src/**/*"], // Includes all TypeScript files in the src directory.
+  "exclude": ["node_modules", "dist"] // Excludes unnecessary directories.
+}
