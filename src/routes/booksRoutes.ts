@@ -1,5 +1,3 @@
-// src/routes/booksRoutes.ts
-
 import express from "express";
 import {
   getBooks,
@@ -10,9 +8,9 @@ import {
 
 const router = express.Router();
 
-router.get("/books", getBooks);
-router.post("/books", createBook);
-router.put("/books/:id", updateBook);
-router.delete("/books/:id", deleteBook);
+router.get("/", getBooks); // GET /api/books
+router.post("/", createBook); // POST /api/books
+router.put("/:id", updateBook); // PUT /api/books/:id
+router.delete("/:id", deleteBook); // DELETE /api/books/:id
 
-export { router as bookRoutes }; // Named export
+export { router as booksRoutes }; // Named export
