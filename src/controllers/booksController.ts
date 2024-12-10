@@ -20,14 +20,28 @@ export const getBookById = async (
   res: Response
 ): Promise<void> => {
   const { id } = req.params;
+  console.log("Received ID:", id); // Log for debugging
+  if (isNaN(Number(id))) {
+    console.log("Invalid ID format:", id);
+    res.status(400).json({ message: "Invalid ID format" });
+    return;
+  }
 
   try {
     const book = await prisma.book.findUnique({
-      where: { id: Number(id) },
+      where: { id: Number(id) }, // Convert the ID to a number
     });
 
+    if (!book) {
+      console.log("Book not found for ID:", id); // Log if no book is found
+      res.status(404).json({ message: "Book not found" });
+      return;
+    }
+
+    console.log("Book found:", book); // Log the retrieved book data
     res.json(book);
   } catch (error) {
+    console.error("Error fetching book with ID:", id, error); // Log detailed error
     res.status(500).json({ message: "Error fetching the book" });
   }
 };

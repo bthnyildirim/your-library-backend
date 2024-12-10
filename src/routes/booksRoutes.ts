@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getBooks,
+  getBookById,
   createBook,
   updateBook,
   deleteBook,
@@ -8,9 +9,11 @@ import {
 
 const router = express.Router();
 
-router.get("/", getBooks); // GET /api/books
-router.post("/", createBook); // POST /api/books
-router.put("/:id", updateBook); // PUT /api/books/:id
-router.delete("/:id", deleteBook); // DELETE /api/books/:id
+// Routes for books
+router.get("/", getBooks);
+router.get("/:id", getBookById);
+router.post("/", createBook);
+router.put("/:id", updateBook);
+router.delete("/:id", deleteBook);
 
-export { router as booksRoutes }; // Named export
+export { router as booksRoutes };

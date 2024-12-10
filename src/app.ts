@@ -11,5 +11,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/books", booksRoutes);
+app.use((req, res) => {
+  res.status(404).json({ message: "Endpoint not found" });
+});
 
 export default app;
