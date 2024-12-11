@@ -14,6 +14,9 @@ app.use(express.json());
 // Register book routes
 app.use("/api/books", booksRoutes);
 
+// Serve static files for image uploads
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
@@ -22,5 +25,3 @@ app.use((req, res, next) => {
   console.log(`Incoming request: ${req.method} ${req.url}`);
   next();
 });
-
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));

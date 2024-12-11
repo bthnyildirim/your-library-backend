@@ -47,15 +47,15 @@ export const getBookById = async (
     });
 
     if (!book) {
-      console.log("Book not found for ID:", id); // Log if no book is found
+      console.log("Book not found for ID:", id);
       res.status(404).json({ message: "Book not found" });
       return;
     }
 
-    console.log("Book found:", book); // Log the retrieved book data
+    console.log("Book found:", book);
     res.json(book);
   } catch (error) {
-    console.error("Error fetching book with ID:", id, error); // Log detailed error
+    console.error("Error fetching book with ID:", id, error);
     res.status(500).json({ message: "Error fetching the book" });
   }
 };
@@ -75,12 +75,18 @@ export const createBook = async (
         .json({ message: `Error uploading file: ${err.message}` });
     }
 
-    const { title, author } = req.body;
-    const imagePath = req.file ? `/uploads/${req.file.filename}` : null; // Get file path
+    const { title, author, rating, price } = req.body;
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
 
     try {
       const newBook = await prisma.book.create({
-        data: { title, author, imagePath },
+        data: {
+          title,
+          author,
+          rating: rating ? parseFloat(rating) : null,
+          price,
+          imagePath,
+        },
       });
       res.json(newBook);
     } catch (error) {
@@ -95,17 +101,37 @@ export const updateBook = async (
   res: Response
 ): Promise<void> => {
   const { id } = req.params;
-  const { title, author } = req.body;
 
-  try {
-    const updatedBook = await prisma.book.update({
-      where: { id: Number(id) },
-      data: { title, author },
-    });
-    res.json(updatedBook);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating book" });
-  }
+  // Use multer middleware for handling image upload
+  upload.single("image")(req, res, async (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(500).json({ message: `Multer error: ${err.message}` });
+    } else if (err) {
+      return res
+        .status(500)
+        .json({ message: `Error uploading file: ${err.message}` });
+    }
+
+    const { title, author, rating, price } = req.body;
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : undefined;
+
+    try {
+      const updatedBook = await prisma.book.update({
+        where: { id: Number(id) },
+        data: {
+          title,
+          author,
+          rating: rating ? parseFloat(rating) : null,
+          price,
+          imagePath: imagePath || undefined, // Only update image if a new one is provided
+        },
+      });
+
+      res.json(updatedBook);
+    } catch (error) {
+      res.status(500).json({ message: "Error updating book" });
+    }
+  });
 };
 
 // Delete a book
