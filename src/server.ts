@@ -2,6 +2,7 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import { booksRoutes } from "./routes/booksRoutes";
+import path from "path";
 
 const prisma = new PrismaClient();
 const app = express();
@@ -21,3 +22,5 @@ app.use((req, res, next) => {
   console.log(`Incoming request: ${req.method} ${req.url}`);
   next();
 });
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));

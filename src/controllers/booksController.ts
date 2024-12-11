@@ -1,8 +1,22 @@
-// src/controllers/booksController.ts
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import multer from "multer";
+import path from "path";
 
+// Set up Prisma client
 const prisma = new PrismaClient();
+
+// Set up Multer storage configuration to save images in 'uploads/' directory
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to file name to prevent overwriting
+  },
+});
+
+const upload = multer({ storage });
 
 // Get all books
 export const getBooks = async (req: Request, res: Response): Promise<void> => {
@@ -46,21 +60,33 @@ export const getBookById = async (
   }
 };
 
-// Create a new book
+// Create a new book with an image upload
 export const createBook = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { title, author } = req.body;
+  // Use multer middleware to handle file upload
+  upload.single("image")(req, res, async (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(500).json({ message: `Multer error: ${err.message}` });
+    } else if (err) {
+      return res
+        .status(500)
+        .json({ message: `Error uploading file: ${err.message}` });
+    }
 
-  try {
-    const newBook = await prisma.book.create({
-      data: { title, author },
-    });
-    res.json(newBook);
-  } catch (error) {
-    res.status(500).json({ message: "Error creating book" });
-  }
+    const { title, author } = req.body;
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : null; // Get file path
+
+    try {
+      const newBook = await prisma.book.create({
+        data: { title, author, imagePath },
+      });
+      res.json(newBook);
+    } catch (error) {
+      res.status(500).json({ message: "Error creating book" });
+    }
+  });
 };
 
 // Update an existing book
