@@ -17,7 +17,7 @@ model Book {
   id        Int     @id @default(autoincrement())
   title     String
   author    String
-  imagePath String?
+   imagePath String?
   rating    Float?
   price     String?
   createdAt DateTime @default(now())

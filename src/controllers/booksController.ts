@@ -83,6 +83,7 @@ export const createBook = async (
         data: {
           title,
           author,
+
           rating: rating ? parseFloat(rating) : null,
           price,
           imagePath,
