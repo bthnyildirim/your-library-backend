@@ -11,11 +11,17 @@ const port = 5005;
 app.use(cors());
 app.use(express.json());
 
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Replace with your frontend's URL
+  })
+);
+
 // Register book routes
 app.use("/api/books", booksRoutes);
 
 // Serve static files for image uploads
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
